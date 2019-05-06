@@ -123,9 +123,9 @@ trait ScalarOpConstants
    val IS_X   = BitPat("b???")
 
 
-   // Decode Stage Control Signals
-   val RT_FIX   = UInt(0, 2)
-   val RT_FLT   = UInt(1, 2)
+   // Decode Stage Control Signals -- Register Type
+   val RT_FIX   = UInt(0, 2) // integer register
+   val RT_FLT   = UInt(1, 2) // floating point register
    val RT_PAS   = UInt(3, 2) // pass-through (pop1 := lrs1, etc)
    val RT_X     = UInt(2, 2) // not-a-register (but shouldn't get a busy-bit, etc.)
                              // TODO rename RT_NAR

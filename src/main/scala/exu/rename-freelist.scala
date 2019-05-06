@@ -78,6 +78,7 @@ class RenameFreeListHelper(
    val io = IO(new FreeListIo(num_phys_registers, pl_width))
 
    // ** FREE LIST TABLE ** //
+   // free register will be marked as '1' in corresponding bit
    val free_list = Reg(init=(~Bits(1,num_phys_registers)))
 
    // track all allocations that have occurred since branch passed by
@@ -89,6 +90,7 @@ class RenameFreeListHelper(
 
    // ------------------------------------------
    // find new,free physical registers
+   // 'oh' means one hot
 
    val requested_pregs_oh_array = Array.fill(pl_width,num_phys_registers){Bool(false)}
    val requested_pregs_oh       = Wire(Vec(pl_width, Bits(width=num_phys_registers)))
@@ -209,6 +211,7 @@ class RenameFreeListHelper(
    // OPTIONALLY: handle single-cycle resets
    // Committed Free List tracks what the free list is at the commit point,
    // allowing for a single-cycle reset of the rename state on a pipeline flush.
+   // commit map table is disabled by default
    if (ENABLE_COMMIT_MAP_TABLE)
    {
       val committed_free_list = Reg(init=(~Bits(1,num_phys_registers)))

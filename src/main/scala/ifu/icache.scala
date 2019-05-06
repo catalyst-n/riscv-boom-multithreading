@@ -83,7 +83,7 @@ class ICachePerfEvents extends Bundle {
 class ICacheBundle(val outer: ICache) extends CoreBundle()(outer.p) {
   val hartid = UInt(INPUT, hartIdLen)
   val req = Decoupled(new ICacheReq).flip
-  val s1_vaddr = UInt(INPUT, vaddrBits) // vaddr delayed one cycle w.r.t. req
+  val s1_vaddr = UInt(INPUT, vaddrBits) // vaddr delayed one cycle with regard to (w.r.t.) req
   val s1_paddr = UInt(INPUT, paddrBits) // delayed one cycle w.r.t. req
   val s2_vaddr = UInt(INPUT, vaddrBits) // delayed two cycles w.r.t. req
   val s1_kill = Bool(INPUT) // delayed one cycle w.r.t. req
@@ -394,6 +394,7 @@ class ICacheModule(outer: ICache) extends ICacheBaseModule(outer)
       io.resp.bits.ae := s1_tl_error.asUInt.orR
       io.resp.valid := s1_valid && s1_hit
 
+    // latency is 2 by default
     case 2 =>
       // when some sort of memory bit error have occurred
       when (s2_valid && s2_disparity) { invalidate := true }
@@ -498,6 +499,7 @@ class ICacheModule(outer: ICache) extends ICacheBaseModule(outer)
                     fromSource = UInt(0),
                     toAddress = (refill_paddr >> blockOffBits) << blockOffBits,
                     lgSize = lgCacheBlockBytes)._2
+  // prefech is disabled by default
   if (cacheParams.prefetch) {
     val (crosses_page, next_block) = Split(refill_paddr(pgIdxBits-1, blockOffBits) +& 1, pgIdxBits-blockOffBits)
     when (tl_out.a.fire()) {

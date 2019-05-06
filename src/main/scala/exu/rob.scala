@@ -726,6 +726,7 @@ class Rob(
    //-----------------------------------------------
 
    // ROB FSM
+   // commit map table is disabled by default
    if (!ENABLE_COMMIT_MAP_TABLE)
    {
        switch (rob_state)

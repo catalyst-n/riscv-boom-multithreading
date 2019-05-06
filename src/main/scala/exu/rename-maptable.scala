@@ -214,6 +214,7 @@ class RenameMapTable(
       }
    }
 
+   // commit map table is disabled by default
    if (ENABLE_COMMIT_MAP_TABLE)
    {
       for (w <- 0 until pl_width)

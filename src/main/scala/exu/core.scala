@@ -82,7 +82,7 @@ class BoomCore(implicit p: Parameters, edge: freechips.rocketchip.tilelink.TLEdg
    val dec_brmask_logic = Module(new BranchMaskGenerationLogic(decodeWidth))
    val rename_stage     = Module(new RenameStage(decodeWidth, num_wakeup_ports, num_fp_wakeup_ports))
    val issue_units      = new boom.exu.IssueUnits(num_wakeup_ports)
-   val iregfile         = if (regreadLatency == 1 && enableCustomRf) {
+   val iregfile         = if (regreadLatency == 1 && enableCustomRf /*default disabled*/ ) {
                               Module(new RegisterFileSeqCustomArray(numIntPhysRegs,
                                  exe_units.withFilter(_.usesIRF).map(e => e.num_rf_read_ports).sum,
                                  exe_units.withFilter(_.usesIRF).map(e => e.num_rf_write_ports).sum,
@@ -95,6 +95,7 @@ class BoomCore(implicit p: Parameters, edge: freechips.rocketchip.tilelink.TLEdg
                                  xLen,
                                  exe_units.bypassable_write_port_mask))
                           }
+   // long latency memory port writeback arbiter
    val ll_wbarb         = Module(new Arbiter(new ExeUnitResp(xLen), 2))
    val iregister_read   = Module(new RegisterRead(
                                  issue_units.map(_.issue_width).sum,

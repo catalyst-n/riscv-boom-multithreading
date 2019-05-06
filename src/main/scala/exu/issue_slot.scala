@@ -27,7 +27,7 @@ class IssueSlotIO(num_wakeup_ports: Int)(implicit p: Parameters) extends BoomBun
    val will_be_valid  = Output(Bool()) // TODO code review, do we need this signal so explicitely?
    val request        = Output(Bool())
    val request_hp     = Output(Bool())
-   val grant          = Input(Bool())
+   val grant          = Input(Bool())  // this instuction is granted to be issued in next clock cycle
 
    val brinfo         = Input(new BrResolutionInfo())
    val kill           = Input(Bool()) // pipeline flush

@@ -82,7 +82,7 @@ class RegisterRead(
       rrd_decode_unit.io.iss_valid := io.iss_valids(w)
       rrd_decode_unit.io.iss_uop   := io.iss_uops(w)
 
-      if (regreadLatency == 1) {
+      if (regreadLatency == 1 /* by default, regreadLatency is 1 */) {
          rrd_valids(w) := RegNext(rrd_decode_unit.io.rrd_valid &&
                            !IsKilledByBranch(io.brinfo, rrd_decode_unit.io.rrd_uop))
          rrd_uops(w)   := RegNext(GetNewUopAndBrMask(rrd_decode_unit.io.rrd_uop, io.brinfo))

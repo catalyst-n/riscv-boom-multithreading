@@ -268,6 +268,7 @@ class ALUUnit(is_branch_unit: Boolean = false, num_stages: Int = 1)(implicit p: 
    var op1_data: UInt = null
    if (is_branch_unit)
    {
+      // icBlockBytes is 64 by default
       val curr_pc = AlignPCToBoundary(io.get_ftq_pc.fetch_pc, icBlockBytes) + io.req.bits.uop.pc_lob
       op1_data = Mux(io.req.bits.uop.ctrl.op1_sel.asUInt === OP1_RS1 , io.req.bits.rs1_data,
                  Mux(io.req.bits.uop.ctrl.op1_sel.asUInt === OP1_PC  , Sext(curr_pc, xLen),
@@ -436,7 +437,7 @@ class ALUUnit(is_branch_unit: Boolean = false, num_stages: Int = 1)(implicit p: 
 
 
       val br_unit =
-         if (enableBrResolutionRegister) Reg(new BranchUnitResp)
+         if (enableBrResolutionRegister /* enabled by default */ ) Reg(new BranchUnitResp)
          else Wire(new BranchUnitResp)
 
 
@@ -449,7 +450,7 @@ class ALUUnit(is_branch_unit: Boolean = false, num_stages: Int = 1)(implicit p: 
       // If the rest of "br_unit" is being registered too, then we don't need to
       // register "brinfo" here, since in that case we would be double counting.
       val brinfo =
-         if (enableBrResolutionRegister) Wire(new BrResolutionInfo)
+         if (enableBrResolutionRegister /* enabled by default */ ) Wire(new BrResolutionInfo)
          else Reg(new BrResolutionInfo)
 
       // note: jal doesn't allocate a branch-mask, so don't clear a br-mask bit
@@ -512,6 +513,7 @@ class ALUUnit(is_branch_unit: Boolean = false, num_stages: Int = 1)(implicit p: 
       def encodeVirtualAddress(a0: UInt, ea: UInt) = if (vaddrBitsExtended == vaddrBits) ea else {
          // Efficient means to compress 64-bit VA into vaddrBits+1 bits.
          // (VA is bad if VA(vaddrBits) != VA(vaddrBits-1)).
+         // in BOOM, vaddrBitsExtended is 40, vaddrBits is 39
          val a = a0.asSInt >> vaddrBits
          val msb = Mux(a === 0.S || a === -1.S, ea(vaddrBits), !ea(vaddrBits-1))
          Cat(msb, ea(vaddrBits-1,0))

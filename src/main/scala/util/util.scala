@@ -75,6 +75,7 @@ object GetNewUopAndBrMask
    }
 }
 
+// clear the bit of resolved branch in br_mask
 object GetNewBrMask
 {
    def apply(brinfo: BrResolutionInfo, uop: MicroOp): UInt =

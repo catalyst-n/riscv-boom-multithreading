@@ -96,6 +96,7 @@ class RegisterFileBehavorial(
 
    // Register the read port addresses to give a full cycle to the RegisterRead Stage (if desired).
    val read_addrs =
+      /* by default, regreadLatency is 1 */
       if (regreadLatency == 0) {
          io.read_ports map {_.addr}
       } else {

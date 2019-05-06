@@ -97,7 +97,7 @@ class BoomBTBResp(implicit p: Parameters) extends BoomBTBBundle()(p)
 
 // BTB update occurs during branch resolution (and only on a mispredict that's taken).
 //  - "pc" is what future fetch PCs will tag match against.
-//  - "cfi_pc" is the PC of the branch instruction.
+//  - "cfi_pc" is the PC of the branch instruction(Control-Flow Instruction).
 class BoomBTBUpdate(implicit p: Parameters) extends BoomBTBBundle()(p)
 {
    val pc = UInt(width = vaddrBits)
@@ -194,6 +194,7 @@ object BoomBTB
       {
          btb = Module(new BTBsa())
       }
+      // densebtb is enabled by default
       else if (boomParams.btb.densebtb)
       {
          btb = Module(new DenseBTB())

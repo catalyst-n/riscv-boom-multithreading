@@ -64,7 +64,7 @@ class GetPCFromFtqIO(implicit p: Parameters) extends BoomBundle()(p)
    val next_pc  = Output(UInt(vaddrBitsExtended.W))
 }
 
-
+// num_entries is 16 by default
 class FetchTargetQueue(num_entries: Int)(implicit p: Parameters) extends BoomModule()(p)
    with HasBoomCoreParameters
 {
