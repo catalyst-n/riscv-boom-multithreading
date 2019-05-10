@@ -208,6 +208,27 @@ class BoomCore(implicit p: Parameters, edge: freechips.rocketchip.tilelink.TLEdg
    val icache_blocked = !(io.ifu.fetchpacket.valid || RegNext(io.ifu.fetchpacket.valid))
    csr.io.counters foreach { c => c.inc := RegNext(perfEvents.evaluate(c.eventSel)) }
 
+   csr.io.esmcounters(0).inc := 1.asUInt()
+   csr.io.esmcounters(1).inc := 1.asUInt()
+   csr.io.esmcounters(2).inc := PopCount(rob.io.enq_valids.asUInt)
+   csr.io.esmcounters(3).inc := PopCount((Range(0,COMMIT_WIDTH)).map{w =>
+                                             rob.io.enq_uops(w).iqtype === IQT_INT })
+   csr.io.esmcounters(4).inc := PopCount((Range(0,COMMIT_WIDTH)).map{w =>
+                                             rob.io.enq_uops(w).iqtype === IQT_FP })
+   csr.io.esmcounters(5).inc := PopCount((Range(0,COMMIT_WIDTH)).map{w =>
+                                             rob.io.enq_uops(w).iqtype === IQT_MEM })
+   csr.io.esmcounters(6).inc := PopCount((Range(0,COMMIT_WIDTH)).map{w =>
+                                             rob.io.enq_uops(w).is_br_or_jmp })
+   csr.io.esmcounters(7).inc := exe_units.csr_unit.io.resp(0).valid
+   csr.io.esmcounters(8).inc := io.ifu.perf.acquire
+   csr.io.esmcounters(9).inc := io.dmem.perf.acquire
+   csr.io.esmcounters(10).inc := io.ifu.perf.tlbMiss
+   csr.io.esmcounters(11).inc := lsu.io.ptw.req.fire()
+   csr.io.esmcounters(12).inc := io.ptw.perf.l2miss
+   csr.io.esmcounters(13).inc := br_unit.brinfo.mispredict
+   csr.io.esmcounters(14).inc := rob.io.flush.valid
+
+
 
 
 
